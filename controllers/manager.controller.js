@@ -2,6 +2,7 @@ const config = require("../config/auth.config");
 const Manager= require('../models/manager');
 const ResponsableLivraison= require('../models/responsableLivraison');
 const Communcontroller=require('../controllers/commun.controller')
+const logger=require('../config/logger');
 
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
@@ -10,14 +11,21 @@ var bcrypt = require("bcryptjs");
 
 exports.signin=(req, res)=>{
 
-    // check admin if exist by email
-    Manager.findOne({
+
+  
+  try{
+
+
+      // check admin if exist by email
+      Manager.findOne({
         email:req.body.email,
     }).exec((err, manager)=>{ 
        
         // if error retun error
         if(err){
          res.status(500).send({ message: err });
+         logger.error(message);
+
         }
         console.log(manager)
         // if deosn't exist return response is not found
@@ -45,6 +53,9 @@ exports.signin=(req, res)=>{
 
          req.session.token = token;
 
+         logger.info("admin  ayant id "+manager.id+" est conecter");
+
+
          res.status(200).send({
            token:token,
            manager:manager,
@@ -52,6 +63,14 @@ exports.signin=(req, res)=>{
 
     })
     
+
+
+
+  }catch(err){
+      logger.error(err.message);
+  }
+
+  
        
 }
 
@@ -60,27 +79,38 @@ exports.signin=(req, res)=>{
 
 exports.addManager=async (req,res)=>{
 
-  var data=req.body;
-  var generatPassword=Math.random().toString(36).substr(2) + req.body.prenom.split("@", 1);
-  var password = bcrypt.hashSync(generatPassword, 8)
-  data.password=password;
+  try{
 
-  const manager= await new Manager({
-    nom:req.body.nom,
-    prenom:req.body.prenom,
-    email:req.body.email,
-    password:password
-});
-console.log(generatPassword)
-
-await manager.save((err, manager)=>{
-
-    if(err){
-        res.status(500).send({message:err})
-    }
-})
-res.send({ message: "Manager was registered successfully!" });
+    var data=req.body;
+    var generatPassword=Math.random().toString(36).substr(2) + req.body.prenom.split("@", 1);
+    var password = bcrypt.hashSync(generatPassword, 8)
+    data.password=password;
   
-  Communcontroller.sendEmail(generatPassword,data.email);
+    const manager= await new Manager({
+      nom:req.body.nom,
+      prenom:req.body.prenom,
+      email:req.body.email,
+      password:password
+  });
+  
+  await manager.save((err, manager)=>{
+  
+      if(err){
+          res.status(500).send({message:err})
+
+          logger.error(err);
+      }
+  })
+  logger.info("manager "+ manager._id  +"est bien enregistrer ");
+
+  res.send({ message: "Manager was registered successfully!" });
+    
+    Communcontroller.sendEmail(generatPassword,data.email);
+
+
+
+  }catch(err){
+      logger.error(err.message);
+  }
 
 }

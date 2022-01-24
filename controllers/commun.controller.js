@@ -5,7 +5,9 @@ exports.signout = async (req, res) => {
       req.session = null;
       return res.status(200).send({ message: "You've been signed out!" });
     } catch (err) {
-      this.next(err);
+
+      logger.error(err.message);
+
     }
   };
 

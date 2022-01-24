@@ -4,11 +4,14 @@ const Livraison= require('../models/livraison');
 const Vehicule= require('../models/vehicule');
 const Livreur=require('../models/livreur');
 const Communcontroller=require('./commun.controller')
+const logger=require('../config/logger');
+
 
 // Create and Save a new Livraison
 exports.create = async (req, res) => {
 
-     
+  try{
+
     let data=req.body;
     // get the vehicule
     let vehicule;
@@ -122,11 +125,13 @@ exports.create = async (req, res) => {
         
      })
 
+     logger.info("livraison "+ livraison._id  +"est bien enregistrer ");
 
      res.send({message:"livraison est bien enregistrer"});
 
-   
-
+  }catch(err){
+      logger.error(err.message);
+  }
 
 };
 
@@ -166,7 +171,7 @@ exports.findAll = (req, res) => {
 
 
   }catch (err) {
-    console.error(err.message);
+    logger.error(err.message);
   }
 
   
@@ -194,7 +199,7 @@ exports.findOne = (req, res) => {
 
 
   }catch (err) {
-    console.log(err.message);
+    logger.error(err.message);
   }
 
 
@@ -218,7 +223,7 @@ exports.getLivraisonsOfLivreur=async(req, res)=>{
     }
 
   }catch (err) {
-    console.log(err.message);
+    logger.error(err.message);
   }
 
 }
@@ -240,7 +245,9 @@ exports.finaliserLivraison=async (req, res)=>{
           res.status(404).send({
             message: `Livraison was not found!`
           });
-        } else res.send({ message: "Livraison est bien finaliser." });
+        } else
+        logger.info("livraison "+ req.params.id  +"est bien finaliser ");
+         res.send({ message: "Livraison est bien finaliser." });
       })
       .catch(err => {
         res.status(500).send({
@@ -250,7 +257,7 @@ exports.finaliserLivraison=async (req, res)=>{
 
   }catch (err) {
 
-    console.log(err.message);
+    logger.error(err.message);
   }
 
 }
@@ -288,7 +295,7 @@ exports.update = (req, res) => {
     
 
   }catch (err) {
-    console.log(err.message);
+    logger.error(err.message);
   }
 
  
@@ -315,7 +322,9 @@ exports.validateLivraison=(req, res)=>{
           res.status(404).send({
             message: `Livraison was not found!`
           });
-        } else res.send({ message: "Livraison est bien valider." });
+        } else 
+        logger.info("livraison "+ req.body.livrasionId  +"est valider");
+        res.send({ message: "Livraison est bien valider." });
       })
       .catch(err => {
         res.status(500).send({
@@ -360,7 +369,8 @@ exports.delete = (req, res) => {
     
 
   }catch (err) {
-    console.log(err.message);
+    logger.error(err.message);
+
   }
 
 

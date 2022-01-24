@@ -2,6 +2,8 @@ const config = require("../config/auth.config");
 const Admin= require('../models/admin');
 const Manager= require('../models/manager');
 const Communcontroller=require('../controllers/commun.controller')
+const logger=require('../config/logger');
+
 
 
 
@@ -33,46 +35,60 @@ exports.signup=(req, res)=>{
 
 exports.signin=(req, res)=>{
 
-    // check admin if exist by email
-    Admin.findOne({
-        email:req.body.email,
-    }).exec((err, admin)=>{ 
-       
-        // if error retun error
-        if(err){
-         res.status(500).send({ message: err });
-        }
-        // if deosn't exist return response is not found
-        if(!admin){
-            res.status(500).send({ message: "Email or Password Invalid" });
-        }
-        // check password if correct, by comparing passwords
-        var passwordIsValid = bcrypt.compareSync(
-            req.body.password,
-            admin.password
-          );
-     
-        // return invalid password if passwords doesn't identique  
+    try{
+
+        // check admin if exist by email
+        Admin.findOne({
+            email:req.body.email,
+        }).exec((err, admin)=>{ 
+           
+            // if error retun error
+            if(err){
+             res.status(500).send({ message: err });
+             logger.error(err);
+
+            }
+            // if deosn't exist return response is not found
+            if(!admin){
+                res.status(500).send({ message: "Email or Password Invalid" });
+            }
+            // check password if correct, by comparing passwords
+            var passwordIsValid = bcrypt.compareSync(
+                req.body.password,
+                admin.password
+              );
+         
+            // return invalid password if passwords doesn't identique  
+        
+              if (!passwordIsValid) {
+                return res.status(401).send({ message: "Invalid Password!" });
+              };
     
-          if (!passwordIsValid) {
-            return res.status(401).send({ message: "Invalid Password!" });
-          };
-
-         var token=jwt.sign({id:admin.id},config.secret,{
-            expiresIn: 86400, // 24 hours
-         })
-
-         var authorities = [];
-
-         req.session.token = token;
-
-         res.status(200).send({
-           token:token,
-           admin:admin,
-         });
-
-    })
+             var token=jwt.sign({id:admin.id},config.secret,{
+                expiresIn: 86400, // 24 hours
+             })
     
+             var authorities = [];
+    
+             req.session.token = token;
+
+             logger.info("admin  ayant id "+admin.id+" est conecter");
+
+    
+             res.status(200).send({
+               token:token,
+               admin:admin,
+             });
+    
+        })
+        
+
+
+    }catch(err){
+        logger.error(err.message);
+    }
+
+
        
 }
 
