@@ -38,3 +38,9 @@
 2022-01-24 13:42:47:4247 info: Server is running on port 3000.
 2022-01-24 13:44:23:4423 info: admin  ayant id 61e5f35523e2541e830ca711 est conecter
 2022-01-24 13:52:38:5238 info: manager 61eea11556de3a684e6e8cdeest bien enregistrer 
+2022-01-24 14:30:43:3043 info: livraison 61eeaa0359fefe8d269a2150est bien enregistrer 
+2022-01-24 14:31:29:3129 info: livraison 61eeaa31b72d7a6ff1bde69aest bien enregistrer 
+2022-01-24 14:31:29:3129 error: Cannot set headers after they are sent to the client
+2022-01-24 14:33:14:3314 info: livraison 61eeaa9a059bad52617dc33fest bien enregistrer 
+2022-01-24 14:33:14:3314 error: Cannot set headers after they are sent to the client
+2022-01-24 14:33:36:3336 info: livraison 61eeaab0ddb80b044204722aest bien enregistrer 

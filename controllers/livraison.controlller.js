@@ -5,6 +5,7 @@ const Vehicule= require('../models/vehicule');
 const Livreur=require('../models/livreur');
 const Communcontroller=require('./commun.controller')
 const logger=require('../config/logger');
+const distanceProvider=require('../helpers/distanceProvider')
 
 
 // Create and Save a new Livraison
@@ -67,7 +68,9 @@ exports.create = async (req, res) => {
         prix+=(data.quantite-3)*(5);
     }
 
-    console.log(prix)
+    // get the distance
+
+   let distance = await distanceProvider.getDistance(data.depart,data.arrivee)
 
     const livraison= await new Livraison({
         depart:data.depart,
@@ -76,7 +79,7 @@ exports.create = async (req, res) => {
         status:"encore",
         date_depart:data.date_depart,
         date_arrivee:"",
-        distance:data.distance,
+        distance:distance,
         quantite:data.quantite,
         prix:prix,
         ResponsableLivraisonId:data.ResponsableLivraisonId,
