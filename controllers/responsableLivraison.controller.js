@@ -3,6 +3,8 @@ const ResponsableLivraison= require('../models/responsableLivraison');
 const Livreur= require('../models/livreur');
 const Communcontroller=require('../controllers/commun.controller')
 
+const Vehicule= require('../models/vehicule');
+
 
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
@@ -54,32 +56,36 @@ exports.signin=(req, res)=>{
        
 }
 
+
+
+
 // create acount for responsable
 
-exports.addLivreur=async (req,res)=>{
+exports.addResponsableLivraison=async (req,res)=>{
 
   var data=req.body;
   var generatPassword=Math.random().toString(36).substr(2) + req.body.prenom.split("@", 1);
   var password = bcrypt.hashSync(generatPassword, 8)
   data.password=password;
 
-  const livreur= await new Livreur({
+  const responsableLivraison= await new ResponsableLivraison({
     nom:req.body.nom,
     prenom:req.body.prenom,
     email:req.body.email,
     password:password,
-    responsableLivraisonId:req.body.responsableLivraisonId
+    managerId:req.body.managerId
 });
 
-await livreur.save((err, livreur)=>{
+await responsableLivraison.save((err, responsableLivraison)=>{
 
     if(err){
         res.status(500).send({message:err})
     }
 })
-res.send({ message: "livreur was registered successfully!" });
+res.send({ message: "ResponsableLivraison was registered successfully!" });
   
-  Communcontroller.sendEmail(generatPassword);
+  Communcontroller.sendEmail(generatPassword,data.email);
 
 }
+
 

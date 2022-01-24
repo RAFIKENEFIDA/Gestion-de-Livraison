@@ -6,7 +6,7 @@ const authJwt=require('../middlewares/authJwt')
 module.exports =(app)=>{
 
    app.post("/manager/signin", authJwt.isManager,ManagerController.signin);
-   app.post("/responsableLivraison/creatAcount", ManagerController.addResponsableLivraison);
+   app.post("/responsableLivraison/creatAcount", ResponsableLivraison.addResponsableLivraison);
 
 
 }

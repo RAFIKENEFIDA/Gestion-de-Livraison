@@ -15,7 +15,11 @@ const Livreur = mongoose.model(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "ResponsableLivraison"
-      }
+      },
+    vehiculeId:{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Vehicule"
+    }  
     
    
   })

@@ -11,7 +11,7 @@ exports.signout = async (req, res) => {
 
   // function for send email 
 
-  exports.sendEmail=async(password)=>{
+  exports.sendEmail=async(password,email)=>{
 
 
 
@@ -25,7 +25,7 @@ exports.signout = async (req, res) => {
     });    
     var mailOptions = {
       from: 'testcoding975@gmail.com',
-      to: 'rafikcoding@gmail.com',
+      to: email,
       subject: 'Voila votre nouveau compte, avec le password',
       text:'Votre password est : '+  password
     };

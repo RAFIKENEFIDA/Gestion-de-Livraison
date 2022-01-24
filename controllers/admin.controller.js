@@ -75,34 +75,7 @@ exports.signin=(req, res)=>{
     
        
 }
-// create acount for manager
 
-exports.addManager=async (req,res)=>{
-
-    var data=req.body;
-    var generatPassword=Math.random().toString(36).substr(2) + req.body.prenom.split("@", 1);
-    var password = bcrypt.hashSync(generatPassword, 8)
-    data.password=password;
-  
-    const manager= await new Manager({
-      nom:req.body.nom,
-      prenom:req.body.prenom,
-      email:req.body.email,
-      password:password
-  });
-  console.log(generatPassword)
-  
-  await manager.save((err, manager)=>{
-  
-      if(err){
-          res.status(500).send({message:err})
-      }
-  })
-  res.send({ message: "Manager was registered successfully!" });
-    
-    Communcontroller.sendEmail(generatPassword);
-  
-  }
 
 
 

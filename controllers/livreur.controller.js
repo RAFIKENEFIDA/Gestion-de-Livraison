@@ -1,5 +1,6 @@
 const config = require("../config/auth.config");
 const Livreur= require('../models/livreur');
+const Vehicule= require('../models/vehicule');
 const Communcontroller=require('./commun.controller')
 
 
@@ -51,5 +52,43 @@ exports.signin=(req, res)=>{
     })
     
        
+}
+
+// create acount for responsable
+
+exports.addLivreur=async (req,res)=>{
+
+  // get idVehicule by nom 
+
+
+  let vehicule=  await  Vehicule.findOne({
+    nom:req.body.vehicule
+  }).exec( );
+
+
+  var data=req.body;
+  var generatPassword=Math.random().toString(36).substr(2) + req.body.prenom.split("@", 1);
+  var password = bcrypt.hashSync(generatPassword, 8)
+  data.password=password;
+
+  const livreur= await new Livreur({
+    nom:req.body.nom,
+    prenom:req.body.prenom,
+    email:req.body.email,
+    password:password,
+    responsableLivraisonId:req.body.responsableLivraisonId,
+    vehiculeId:vehicule.id
+});
+
+await livreur.save((err, livreur)=>{
+
+    if(err){
+        res.status(500).send({message:err})
+    }
+})
+res.send({ message: "livreur was registered successfully!" });
+  
+  Communcontroller.sendEmail(generatPassword,data.email);
+
 }
 
